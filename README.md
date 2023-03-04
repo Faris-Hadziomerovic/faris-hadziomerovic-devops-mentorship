@@ -1,3 +1,3 @@
-# AWS Mentorship Program - Task \#1
+# AWS Mentorship Program
 
-This is my repo for task 1 of the mentorship program
+This is the repo I will use for the tasks given as part of the ***AWS DevOps Mentorship Program***.
