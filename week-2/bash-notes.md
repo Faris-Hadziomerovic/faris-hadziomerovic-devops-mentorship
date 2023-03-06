@@ -24,6 +24,8 @@ $ ssh bandit0@bandit.labs.overthewire.org -p 2220
 
 If connecting to the server is successful, the server will prompt us to enter the password for the user, which was previously given - `bandit0`.
 
+![Let the game begin](images/Let%20the%20game%20begin.png)
+
 After logging in as user ***bandit0***, we need to find the password for the next level by locating the file **readme**. By using the `ls` command we will find that the file is located in our current working directory:
 
 ```sh
@@ -58,7 +60,7 @@ $ ssh bandit1@bandit.labs.overthewire.org -p 2220
 
 We will use the second approach and it will be assumed throughout these notes.
 
-![Alt text](images/level%200%20-%20complete.png)
+![Solution](images/level%200%20-%20complete.png)
 
 ## Level 1
 
@@ -68,6 +70,8 @@ The goal of this and every subsequent level is to find the password for the next
 <br>
 Given info:
 - The password for the next level is stored in a file called "**-**"
+
+![Level 1: start](images/level%201%20-%20start.png)
 
 ### Solution
 
@@ -90,6 +94,8 @@ $ cat < -
 Given info:
 - The password for the next level is stored in a file called "**spaces in this filename**"
 
+![Level 2: start](images/level%202%20-%20start.png)
+
 ### Solution
 
 By using `ls` we will find the file, but to read it's content we need to use quotation marks because the shell would otherwise iterpret each word as a parameter:
@@ -106,6 +112,8 @@ $ cat "spaces in this filename"
 
 Given info:
 - The password for the next level is stored in a hidden file in the **inhere** directory.
+
+![Level 3: start](images/level%203%20-%20start.png)
 
 ### Solution
 
@@ -137,6 +145,8 @@ $ cat .hidden
 
 Given info:
 - The password for the next level is stored in the only human-readable file in the **inhere** directory.
+
+![Level 4: start](images/level%204%20-%20start.png)
 
 ### Solution
 
@@ -172,6 +182,8 @@ Given info:
     - 1033 bytes in size
     - not executable
 
+![Level 5: start](images/level%205%20-%20start.png)
+
 ### Solution
 
 First we will change dirs with `cd`. The with `ls` we can see that the current one contains 18 other directories and if we add the `-R` option to `ls` we can see their structure as well by going through them recursively: 
@@ -204,6 +216,8 @@ Given info:
     - owned by group bandit6
     - 33 bytes in size
 
+![Level 6: start](images/level%206%20-%20start.png)
+
 ### Solution
 
 We will change dirs and go "up" 2 levels so the find command can search more files: 
@@ -231,6 +245,8 @@ $ cat $(find -group bandit6 -user bandit7 -size 33c -readable)
 Given info:
 - The password for the next level is stored in the file **data.txt** next to the word *millionth*.
 
+![Level 7: start](images/level%207%20-%20start.png)
+
 ### Solution
 
 We can find the file **data.txt** in the current dir with `ls`. 
@@ -253,6 +269,8 @@ Now we have the password outputed next to the word *millionth*
 Given info:
 - The password for the next level is stored in the file **data.txt** and is the only line of text that occurs only once.
 
+![Level 8: start](images/level%208%20-%20start.png)
+
 ### Solution
 
 We will use the `uniq -u` command to single out the unique line, but it only works with sorted text files so we have to also use the `sort` command first: 
@@ -273,6 +291,8 @@ $ sort data.txt | uniq -u
 Given info:
 - The password for the next level is stored in the file **data.txt** in one of the few human-readable strings, preceded by several ‘=’ characters.
 
+![Level 9: start](images/level%209%20-%20start.png)
+
 ### Solution
 
 We will use the `grep` command with a regex pattern find the password and redirect the output to another `grep` command to only show the 32 character long password as was the case previously: 
@@ -287,3 +307,23 @@ $ grep -a -o -E '[=]{2,}.+[[:alnum:]]{32}' data.txt | grep -o -E '[[:alnum:]]+'
 ```
 
 ![Solution](images/level%209%20-%20complete.png)
+
+## Level 10
+
+### Objective
+
+Given info:
+- The password for the next level is stored in the file **data.txt**, which contains base64 encoded data.
+
+![Level 10: start](images/level%2010%20-%20start.png)
+
+### Solution
+
+We will use the `base64` command with `-d` option to decode the file and redirect the output to another `grep` command to only show the 32 character long password: 
+
+```sh
+$ base64 -d data.txt | grep -o -E '[[:alnum:]]{32}$'
+# base64 -d will decode the file and give the output to grep to single out the password
+```
+
+![Solution](images/level%2010%20-%20complete.png)
