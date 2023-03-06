@@ -160,3 +160,130 @@ $ for file in *;
 We found the password in -file07:
 
 ![Solution](images/level%204%20-%20complete.png)
+
+## Level 5
+
+### Objective
+
+Given info:
+- The password for the next level is stored somewhere in the **inhere** directory.
+ The file has all of the following properties:
+    - human-readable
+    - 1033 bytes in size
+    - not executable
+
+### Solution
+
+First we will change dirs with `cd`. The with `ls` we can see that the current one contains 18 other directories and if we add the `-R` option to `ls` we can see their structure as well by going through them recursively: 
+
+```sh
+$ ls -Ra
+# we can chain -R and -a like -Ra to also list hidden files
+```
+
+Now to find the file and output it's content we will use `find` and redirect it's output into `cat` as an argument so we will use the command substitution syntax `$(...)`:
+
+```sh
+$ cat $(find . ! -executable -size 1033c)
+# find will search through the hierarchy tree from the given location, "." means the current working dir, and return all files or dirs that have the corresponding properties
+# ! -executable searches for all files that are NOT (!) executable, that is that do not have the x in rwx permissions set to true
+# -size returns all files that have the corresponding size, which is 1033c (the c tells the size that it's in bytes)
+```
+
+![Solution](images/level%205%20-%20complete.png)
+
+
+## Level 6
+
+### Objective
+
+Given info:
+- The password for the next level is stored somewhere server.
+ The file has all of the following properties:
+    - owned by user bandit7
+    - owned by group bandit6
+    - 33 bytes in size
+
+### Solution
+
+We will change dirs and go "up" 2 levels so the find command can search more files: 
+
+```sh
+# option 1 (go up 2 levels):
+$ cd ../..
+# option 2 (go directly to root):
+$ cd /
+```
+
+Now to find the file and output it to the console using the same tehnique as last level, just with different options and srguments:
+
+```sh
+$ cat $(find -group bandit6 -user bandit7 -size 33c -readable)
+# -group and -user search for files that are owned by the passed group or user id respectively
+```
+
+![Solution](images/level%206%20-%20complete.png)
+
+## Level 7
+
+### Objective
+
+Given info:
+- The password for the next level is stored in the file **data.txt** next to the word *millionth*.
+
+### Solution
+
+We can find the file **data.txt** in the current dir with `ls`. 
+Now we have to search the file and find the line of text that contains the word *millionth* which we will pass as the patter to search for using the `grep` command: 
+
+```sh
+$ grep 'millionth' data.txt
+# grep searches for patterns in each file
+```
+
+Now we have the password outputed next to the word *millionth*
+
+![Solution](images/level%207%20-%20complete.png)
+
+
+## Level 8
+
+### Objective
+
+Given info:
+- The password for the next level is stored in the file **data.txt** and is the only line of text that occurs only once.
+
+### Solution
+
+We will use the `uniq -u` command to single out the unique line, but it only works with sorted text files so we have to also use the `sort` command first: 
+
+```sh
+$ sort data.txt | uniq -u
+# sort will sort the lines of text in alphabetical order
+# the pipe operator will take the output of the sort command and redirect it into the uniq command
+# uniq -u will return only unique lines of text that appear only once
+```
+
+![Solution](images/level%208%20-%20complete.png)
+
+## Level 9
+
+### Objective
+
+Given info:
+- The password for the next level is stored in the file **data.txt** in one of the few human-readable strings, preceded by several ‘=’ characters.
+
+### Solution
+
+We will use the `grep` command with a regex pattern find the password and redirect the output to another `grep` command to only show the 32 character long password as was the case previously: 
+
+```sh
+$ grep -a -o -E '[=]{2,}.+[[:alnum:]]{32}' data.txt | grep -o -E '[[:alnum:]]+'
+# the first grep will search for and find the given regex pattern and return it into the second grep that will single out the password
+# -a is used so grep treats the file which is mostly in binary as a text file
+# -o will only output the matching text and not the line where it's found
+# -E will enable the use of extended regex characters like + and .
+# [:alnum:] is a pattern for matching alpha-numeric characters like a-z A-Z and 0-9
+```
+
+![Solution](images/level%209%20-%20complete.png)
