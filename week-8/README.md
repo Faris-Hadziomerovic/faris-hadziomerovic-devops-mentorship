@@ -39,3 +39,4 @@
 
 ## 7. Infrastructure diagram
 
+![infrastructure-diagram](/week-8/images/infrastructure-diagram.png?raw=true)
